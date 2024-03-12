@@ -36,7 +36,7 @@ def get_proposals(task, x, y):
     proposals = gpt(propose_prompt, n=1, stop=None)[0].split('\n')
     return [y + _ + '\n' for _ in proposals]
 
-def get_samples(task, x, y, n_generate_sample, prompt_sample, stop):
+def get_samples(task, x, y, n_generate_sample, prompt_sample, stop):  # TODO hier kommt am ende nur x mal "Plan:" raus. Das Problem ist stop. By "none" it works correctly
     if prompt_sample == 'standard':
         prompt = task.standard_prompt_wrap(x, y)
     elif prompt_sample == 'cot':
@@ -44,6 +44,7 @@ def get_samples(task, x, y, n_generate_sample, prompt_sample, stop):
     else:
         raise ValueError(f'prompt_sample {prompt_sample} not recognized')
     samples = gpt(prompt, n=n_generate_sample, stop=stop)
+
     return [y + _ for _ in samples]
 
 def solve(args, task, idx, to_print=True):
@@ -59,6 +60,7 @@ def solve(args, task, idx, to_print=True):
             new_ys = [get_samples(task, x, y, args.n_generate_sample, prompt_sample=args.prompt_sample, stop=task.stops[step]) for y in ys]
         elif args.method_generate == 'propose':
             new_ys = [get_proposals(task, x, y) for y in ys]
+
         new_ys = list(itertools.chain(*new_ys))
         ids = list(range(len(new_ys)))
         # evaluation

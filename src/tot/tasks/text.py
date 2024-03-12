@@ -29,8 +29,9 @@ class TextTask(Task):
     def get_input(self, idx: int) -> str:
         return self.data[idx]
     
-    def test_output(self, idx: int, output: str):
-        output = output.split('Passage:\n')[-1]
+    def test_output(self, idx: int, output: str): # Coherency score but too what?
+        print("test_output in TextTask: Output: ", output)
+        output = output.split('Passage:\n')[-1] 
         prompt = score_prompt + output
         score_outputs = gpt(prompt, n=5, model='gpt-4')
         scores = []
